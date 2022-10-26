@@ -1,0 +1,22 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+
+    - name: Retrieve GPG Key for Webmin Repo
+      get_url:
+        url: https://download.webmin.com/jcameron-key.asc
+        dest: /etc/apt/keyrings/webmin.asc
+        mode: '0755'
+
+    - name: Add Webmin Repo
+      apt_repository:
+        repo: deb [signed-by=/etc/apt/keyrings/webmin.asc] https://download.webmin.com/download/repository sarge contrib
+        state: present
+
+    - name: Update Repo & Install Webmin
+      apt:
+        name: webmin
+        state: latest
+        update_cache: yes
