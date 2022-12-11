@@ -1,0 +1,26 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+
+    - name: Update Repo Cache
+      apt:
+        update_cache: yes
+
+    - name: Add Terraform GPG Key
+      get_url:
+        url: https://apt.releases.hashicorp.com/gpg
+        dest: /etc/apt/keyrings/hashicorp.asc
+        mode: '0755'
+
+    - name: Add Terraform Repo
+      apt_repository:
+        repo: deb [signed-by=/etc/apt/keyrings/hashicorp.asc] https://apt.releases.hashicorp.com {{ansible_distribution_release}} main
+        state: present
+
+    - name: Install Terraform Package
+      apt:
+        name: terraform
+        state: latest
+        update_cache: yes

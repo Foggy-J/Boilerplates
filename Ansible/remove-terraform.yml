@@ -1,0 +1,22 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+
+    - name: Remove Terraform Package
+      apt:
+        name: terraform
+        state: absent
+        purge: yes
+        autoremove: yes
+
+    - name: Remove Terraform Repo
+      apt_repository:
+        repo: deb [signed-by=/etc/apt/keyrings/hashicorp.asc] https://apt.releases.hashicorp.com {{ansible_distribution_release}} main
+        state: absent
+
+    - name: Remove Terraform GPG Key
+      file:
+        path: /etc/apt/keyrings/hashicorp.asc
+        state: absent
